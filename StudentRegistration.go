@@ -30,7 +30,7 @@ func main() {
 	if(noOfStudents < 1) {
 
 		AllStudentsRecord = make(StudentS, 5)
-		for i := 0; i < 5; i++ {
+		for i := 0; i < 15; i++ {
 			AllStudentsRecord = append(AllStudentsRecord, HadCodeStudentRecord(&TotalStudentCount))
 		}
 	}else {
@@ -45,41 +45,31 @@ func main() {
 	var reTry string = "Y"
 	for reTry == "Y" || reTry == "y" {
 		reTry="n"
-		fmt.Print("Please enter Choice. \n 1. Update Student Info \n 2. Delete Student \n 3. Manage Books \n 4. Swow all record.\n Enter n to exist : ")
-		var choice int
-		fmt.Scanf("%d",&choice)
-		switch choice {
-		case 1:
-			var rollnumber uint64
-			fmt.Print("Please enter Student Roll number to Update record:")
-			fmt.Scanf("%d",&rollnumber)
-			present,index := IsRollNumberExist(rollnumber)
-			if present == 1{
+		var rollnumber uint64
+		fmt.Print("Please enter Student Roll Number to Manage record:")
+		fmt.Scanf("%d",&rollnumber)
+		present,index := IsRollNumberExist(rollnumber)
+		if present != 0 && index >= 0 {
+
+			fmt.Print("Please enter Choice. \n 1. Update Student Info \n 2. Delete Student \n 3. Manage Books \n 4. Swow all record.\n 5. Update BestFriend \n Enter n to exist : ")
+			var choice int
+			fmt.Scanf("%d",&choice)
+			switch choice {
+			case 1:
 				UpdateStudentInfo(index)
-			}
 
-		case 2:
-			var rollnumber uint64
-			fmt.Print("Please enter Student Roll number to delete record:")
-			fmt.Scanf("%d",&rollnumber)
-			present,index := IsRollNumberExist(rollnumber)
-			if present == 1{
+			case 2:
 				DeleteStudentRecord(index)
-			}
-		case 3:
-			var rollnumber uint64
-			fmt.Print("Please enter Student Roll number to Manage Books:")
-			fmt.Scanf("%d",&rollnumber)
-			present,index := IsRollNumberExist(rollnumber)
-			if present == 1{
+			case 3:
 				ManagaLibrary(index)
-			}
+			case 4:
+				ReadFromStudentFile()
+			case 5:
+				UpdateBestFriend(index)
+			default:
+				fmt.Println("You have not Spesified any Choice")
 
-		case 4:
-			ReadFromStudentFile()
-		default:
-			fmt.Println("You have not Spesified any Choice")
-			return
+			}
 		}
 		fmt.Printf("Do you wan to continue (y/n):")
 		fmt.Scanf("%s",&reTry)

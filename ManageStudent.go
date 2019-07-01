@@ -121,8 +121,68 @@ func UpdateStudentInfo(index int) {
 }
 
 
+func UpdateBestFriend(index int) {
+
+	fmt.Print("\nEnter 1. Map best frinds 2. To Un map Best friends (Enter to NoN) :")
+	var choice int
+	fmt.Scanf("%d", &choice)
+
+	switch choice {
+	case 1:
+		addBestFriend(index)
+	case 2:
+		deleteBestFriend(index)
+	default:
+		fmt.Println("You have not Spesified any Choice")
+		return
+	}
+	fmt.Println("New Value Updated")
+	showRecordValue(index)
+	WriteStudentDateToFile(AllStudentsRecord)
+}
+
+func addBestFriend(index int) {
+	fmt.Println(" All Best Friends Mapped :  ")
+	showAllBfRecord(index )
+	fmt.Print(" Enter Number of Best Friends you want to Add ( Hit Enter for NiLL) :  ")
+	var noOfBestFriends int
+
+	fmt.Scanf("%d",&noOfBestFriends)
+	for i:=0; i<noOfBestFriends; i++{
+		var bestFreiendRollNo uint64
+		fmt.Printf(" Enter (%d ) Best Friend Roll Number : ",i+1)
+		fmt.Scanf("%d",&bestFreiendRollNo)
+		present,bfindex  := IsRollNumberExist(bestFreiendRollNo)
+		if present != 0{
+			//AllStudentsRecord[index].BestFriends[len(AllStudentsRecord[index].BestFriends)] = make(map[int]*Student)
+			AllStudentsRecord[index].BestFriends[len(AllStudentsRecord[index].BestFriends)] = &AllStudentsRecord[bfindex]
+		}
+	}
+	fmt.Println(" All Best Friends Mapped after update:  ")
+	showAllBfRecord(index )
+}
+
+
+func deleteBestFriend(index int) {
+	var bestFreiendRollNo uint64
+	fmt.Println(" All Mapped Best Friends record :  ")
+	showAllBfRecord(index )
+	fmt.Printf(" Enter Best Friend Roll Number to unmap: ")
+	fmt.Scanf("%d",&bestFreiendRollNo)
+	present,bfindex  := IsRollNumberExist(bestFreiendRollNo)
+	if present != 0{
+		//AllStudentsRecord[index].BestFriends[len(AllStudentsRecord[index].BestFriends)] = make(map[int]*Student)
+		AllStudentsRecord[index].BestFriends[bfindex] = nil
+
+	}
+	fmt.Println(" All Best Friends Mapped after Delete:  ")
+	showAllBfRecord(index )
+}
+
+
 func  IsRollNumberExist(rollnumber uint64) (present,index int) {
 	present = 0
+	index = -1
 	for key:= range AllStudentsRecord{
 		if AllStudentsRecord[key].RollNo == rollnumber{
 			present = 1
@@ -136,6 +196,14 @@ func  IsRollNumberExist(rollnumber uint64) (present,index int) {
 	}
 
 	return
+}
+
+func showAllBfRecord(index int){
+	fmt.Println("Best Friend Record: ")
+	for bfindex,value := range AllStudentsRecord[index].BestFriends {
+		fmt.Printf("%+v %d",value,bfindex )
+		fmt.Println()
+	}
 }
 
 func showRecordValue(index int){
