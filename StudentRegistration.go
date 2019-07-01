@@ -45,19 +45,23 @@ func main() {
 	var reTry string = "Y"
 	for reTry == "Y" || reTry == "y" {
 		reTry="n"
-		var rollnumber uint64
-		fmt.Print("Please enter Student Roll Number to Manage record:")
-		fmt.Scanf("%d",&rollnumber)
-		present,index := IsRollNumberExist(rollnumber)
-		if present != 0 && index >= 0 {
 
-			fmt.Print("Please enter Choice. \n 1. Update Student Info \n 2. Delete Student \n 3. Manage Books \n 4. Swow all record.\n 5. Update BestFriend \n Enter n to exist : ")
-			var choice int
-			fmt.Scanf("%d",&choice)
+		fmt.Print("Please enter Choice. \n 1. Update Student Info \n 2. Delete Student \n 3. Manage Books \n 4. Swow all record.\n 5. Update BestFriend \n Enter n to exist : ")
+		var choice int
+		fmt.Scanf("%d",&choice)
+		var rollnumber uint64
+		present,index := 0,0
+		if (choice == 4){
+			present = 1
+		}else {
+			fmt.Print("Please enter Student Roll Number to Manage record:")
+			fmt.Scanf("%d", &rollnumber)
+			present, index = IsRollNumberExist(rollnumber)
+		}
+		if present != 0 {
 			switch choice {
 			case 1:
 				UpdateStudentInfo(index)
-
 			case 2:
 				DeleteStudentRecord(index)
 			case 3:
@@ -79,3 +83,4 @@ func main() {
 	//StudentMutex.Unlock()
 
 }
+

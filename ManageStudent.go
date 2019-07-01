@@ -65,7 +65,7 @@ func CreateStudentRecord(TotalStudentCount *uint64) Student {
 		}
 		// if Roll number exist Map to student record
 		newStudent.BestFriends = make(map[int]*Student)
-		newStudent.BestFriends[i+1] = &AllStudentsRecord[bestFreiendRollNo]
+		//newStudent.BestFriends[i+1] = &AllStudentsRecord[bestFreiendRollNo]
 
 	}
 	*TotalStudentCount = rollnum
@@ -84,10 +84,14 @@ func DeleteStudentRecord(index int)  {
 	AllStudentsRecord[len(AllStudentsRecord)-1].Gender=""
 	AllStudentsRecord[len(AllStudentsRecord)-1].Stream=""
 	AllStudentsRecord[len(AllStudentsRecord)-1].Books=nil
-	AllStudentsRecord[len(AllStudentsRecord)-1].BestFriends=nil
+
 	AllStudentsRecord[len(AllStudentsRecord)-1].Subjects=nil
 	AllStudentsRecord[len(AllStudentsRecord)-1].RollNo=0
-	//AllStudentsRecord[len(AllStudentsRecord)-1] = nil
+	for key := range AllStudentsRecord[len(AllStudentsRecord)-1].BestFriends {
+		delete(AllStudentsRecord[index].BestFriends, key)
+	}
+	removeFromBestFriendMap(AllStudentsRecord[index].RollNo)
+	AllStudentsRecord[len(AllStudentsRecord)-1].BestFriends=nil
 	// Truncate slice.
 	AllStudentsRecord = AllStudentsRecord[:len(AllStudentsRecord)-1]
 	WriteStudentDateToFile(AllStudentsRecord)
@@ -154,7 +158,7 @@ func addBestFriend(index int) {
 		fmt.Scanf("%d",&bestFreiendRollNo)
 		present,bfindex  := IsRollNumberExist(bestFreiendRollNo)
 		if present != 0{
-			//AllStudentsRecord[index].BestFriends[len(AllStudentsRecord[index].BestFriends)] = make(map[int]*Student)
+			fmt.Println(bfindex,index,len(AllStudentsRecord[index].BestFriends),bestFreiendRollNo)
 			AllStudentsRecord[index].BestFriends[len(AllStudentsRecord[index].BestFriends)] = &AllStudentsRecord[bfindex]
 		}
 	}
@@ -169,25 +173,25 @@ func deleteBestFriend(index int) {
 	showAllBfRecord(index )
 	fmt.Printf(" Enter Best Friend Roll Number to unmap: ")
 	fmt.Scanf("%d",&bestFreiendRollNo)
-	present,bfindex  := IsRollNumberExist(bestFreiendRollNo)
-	if present != 0{
-		//AllStudentsRecord[index].BestFriends[len(AllStudentsRecord[index].BestFriends)] = make(map[int]*Student)
-		AllStudentsRecord[index].BestFriends[bfindex] = nil
+	present,bfindex :=  IsBestFriendMapped(index,bestFreiendRollNo)
 
+	if present == 0{
+		return
 	}
-	fmt.Println(" All Best Friends Mapped after Delete:  ")
+
+	delete(AllStudentsRecord[index].BestFriends, bfindex)
+	fmt.Println(" All Best Friends Mapped after Delete:  ",)
 	showAllBfRecord(index )
 }
 
 
 func  IsRollNumberExist(rollnumber uint64) (present,index int) {
 	present = 0
-	index = -1
 	for key:= range AllStudentsRecord{
 		if AllStudentsRecord[key].RollNo == rollnumber{
 			present = 1
 			index = key
-			break
+			return
 		}
 	}
 	if present == 0{
@@ -198,10 +202,40 @@ func  IsRollNumberExist(rollnumber uint64) (present,index int) {
 	return
 }
 
+func  IsBestFriendMapped(index int ,rollnumber uint64) (present,bfindex int) {
+	present = 0
+	for key := range AllStudentsRecord[index].BestFriends {
+		if AllStudentsRecord[index].BestFriends[key].RollNo == rollnumber{
+			present = 1
+			bfindex = key
+			return
+		}
+	}
+	if present == 0{
+		fmt.Println("Student is not mapped to ",index," as best friend ")
+
+	}
+
+	return
+}
+
+func  removeFromBestFriendMap( rollnumber uint64)  {
+
+	for key := range AllStudentsRecord {
+		for bfkey := range AllStudentsRecord[key].BestFriends {
+			if AllStudentsRecord[key].BestFriends[bfkey].RollNo == rollnumber{
+				delete(AllStudentsRecord[key].BestFriends, bfkey)
+				//AllStudentsRecord[key].BestFriends[bfkey]=nil
+			}
+		}
+	}
+}
+
+
 func showAllBfRecord(index int){
 	fmt.Println("Best Friend Record: ")
-	for bfindex,value := range AllStudentsRecord[index].BestFriends {
-		fmt.Printf("%+v %d",value,bfindex )
+	for _,value := range AllStudentsRecord[index].BestFriends {
+		fmt.Printf("%+v ",value )
 		fmt.Println()
 	}
 }

@@ -34,7 +34,7 @@ func HadCodeStudentRecord(TotalStudentCount *uint64) Student {
 
 	// if Roll number exist Map to student record
 	newStudent.BestFriends = make(map[int]*Student)
-	newStudent.BestFriends[0] = &AllStudentsRecord[rollnum]
+	//newStudent.BestFriends[0] = &AllStudentsRecord[rollnum]
 
 	*TotalStudentCount = rollnum
 	return *newStudent
